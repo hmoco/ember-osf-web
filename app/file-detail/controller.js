@@ -78,8 +78,11 @@ export default Ember.Controller.extend({
         },
 
         openFile(file) {
-            const fileID = file.get('guid') ? file.get('guid') : file.id;
-            this.transitionToRoute('file-detail', fileID);
+            if (file.get('guid')) {
+                this.transitionToRoute('file-detail', file.get('guid'));
+            } else {
+                window.location = `/file_redirect${file.get('path')}`;
+            }
         },
 
         addTag(tag) {
