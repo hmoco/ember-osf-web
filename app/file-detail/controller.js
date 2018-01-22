@@ -5,11 +5,11 @@ import { computed } from '@ember/object';
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { mimeTypes } from 'ember-osf/const/mime-types';
-import outsideClick from 'ember-osf/utils/outside-click';
+import outsideClick from '../utils/outside-click';
 import mime from 'npm:mime-types';
-import Analytics from 'ember-osf/mixins/analytics';
+import Analytics from '../mixins/analytics';
 import config from 'ember-get-config';
-import pathJoin from 'ember-osf/utils/path-join';
+import pathJoin from '../utils/path-join';
 import { htmlSafe } from '@ember/string';
 
 export default Controller.extend(Analytics, {

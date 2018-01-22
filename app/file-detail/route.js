@@ -1,7 +1,7 @@
 import { hash } from 'rsvp';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import Analytics from 'ember-osf/mixins/analytics';
+import Analytics from '../mixins/analytics';
 
 export default Route.extend(Analytics, {
     currentUser: service(),
