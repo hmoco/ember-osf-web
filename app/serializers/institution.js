@@ -1,7 +1,7 @@
 import OsfSerializer from './osf-serializer';
 
 import {
-    pluralize
+    pluralize,
 } from 'ember-inflector';
 
 export default OsfSerializer.extend({
@@ -9,10 +9,10 @@ export default OsfSerializer.extend({
         if (options.forRelationship) {
             hash.data = [{
                 id: snapshot.record.get('id'),
-                type: pluralize(typeClass.modelName)
+                type: pluralize(typeClass.modelName),
             }];
             return hash;
         }
         return this._super(hash, typeClass, snapshot, options);
-    }
+    },
 });

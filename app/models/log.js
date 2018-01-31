@@ -21,16 +21,16 @@ export default OsfModel.extend({
     action: DS.attr('fixstring'),
     params: DS.attr(),
     node: DS.belongsTo('node', {
-        inverse: null
+        inverse: null,
     }),
     originalNode: DS.belongsTo('node', {
-        inverse: 'logs'
+        inverse: 'logs',
     }),
     user: DS.belongsTo('user'),
     linkedNode: DS.belongsTo('node', {
-        inverse: null
+        inverse: null,
     }),
     templateNode: DS.belongsTo('node', {
-        inverse: null
-    })
+        inverse: null,
+    }),
 });

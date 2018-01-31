@@ -25,5 +25,5 @@ export default OsfModel.extend(FileItemMixin, {
     path: DS.attr('string'),
     provider: DS.attr('fixstring'),
     files: DS.hasMany('file'),
-    node: DS.belongsTo('node')
+    node: DS.belongsTo('node'),
 });

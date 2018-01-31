@@ -33,10 +33,10 @@ export default DS.Model.extend({
      * @method resolveRelationship
      * @private
      * @param {String} rel Name of the relationship on the model
-     **/
+     * */
     resolveRelationship(rel) {
-        var relation;
-        var meta = this[rel].meta();
+        let relation;
+        const meta = this[rel].meta();
         if (meta.kind === 'hasMany') {
             relation = this.hasMany(rel).hasManyRelationship;
         } else if (meta.kind === 'belongsTo') {
@@ -45,7 +45,7 @@ export default DS.Model.extend({
         return relation;
     },
     save(options = {
-        adapterOptions: {}
+        adapterOptions: {},
     }) {
         if (options.adapterOptions.nested) {
             return this._super(...arguments);
@@ -53,18 +53,18 @@ export default DS.Model.extend({
 
         this.set('_dirtyRelationships', {});
         this.eachRelationship((rel) => {
-            var relation = this.resolveRelationship(rel);
+            const relation = this.resolveRelationship(rel);
             // TODO(samchrisinger): not sure if hasLoaded is a subset if the hasData state
             if (relation.hasData && (relation.hasLoaded || rel === 'affiliatedInstitutions')) {
-                var canonicalIds = relation.canonicalMembers.list.map(member => member.getRecord().get('id'));
-                var currentIds = relation.members.list.map(member => member.getRecord().get('id'));
-                var changes = {
+                const canonicalIds = relation.canonicalMembers.list.map(member => member.getRecord().get('id'));
+                const currentIds = relation.members.list.map(member => member.getRecord().get('id'));
+                const changes = {
                     create: relation.members.list.filter(m => m.getRecord().get('isNew')),
                     add: relation.members.list.filter(m => !m.getRecord().get('isNew') && canonicalIds.indexOf(m.getRecord().get('id')) === -1),
-                    remove: relation.canonicalMembers.list.filter(m => currentIds.indexOf(m.getRecord().get('id')) === -1)
+                    remove: relation.canonicalMembers.list.filter(m => currentIds.indexOf(m.getRecord().get('id')) === -1),
                 };
 
-                var other = this.get(`_dirtyRelationships.${rel}`) || {};
+                const other = this.get(`_dirtyRelationships.${rel}`) || {};
                 Ember.merge(other, changes);
                 this.set(`_dirtyRelationships.${rel}`, other);
             }
@@ -99,7 +99,7 @@ export default DS.Model.extend({
 
             authenticatedAJAX(options).then(
                 Ember.run.bind(this, this.__queryHasManyDone, resolve),
-                reject
+                reject,
             );
         });
 

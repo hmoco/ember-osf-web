@@ -51,7 +51,7 @@ export default OsfModel.extend({
 
     licenseText: Ember.computed('license', function() {
         const text = this.get('license.text') || '';
-        const {year = '', copyright_holders = []} = this.get('licenseRecord');
+        const { year = '', copyright_holders = [] } = this.get('licenseRecord');
 
         return text
             .replace(/({{year}})/g, year)

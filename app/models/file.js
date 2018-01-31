@@ -46,7 +46,7 @@ export default OsfModel.extend(FileItemMixin, {
     // File attributes
     versions: DS.hasMany('file-version'),
     comments: DS.hasMany('comment'),
-    node: DS.belongsTo('node'),  // TODO: In the future apiv2 may also need to support this pointing at nodes OR registrations
+    node: DS.belongsTo('node'), // TODO: In the future apiv2 may also need to support this pointing at nodes OR registrations
     user: DS.belongsTo('user'),
     checkout: DS.attr('fixstring'),
 
@@ -55,17 +55,17 @@ export default OsfModel.extend(FileItemMixin, {
             url: this.get('links.upload'),
             type: 'POST',
             xhrFields: {
-                withCredentials: true
+                withCredentials: true,
             },
             headers: {
-                'Content-Type': 'Application/json'
+                'Content-Type': 'Application/json',
             },
             data: JSON.stringify({
                 action: 'rename',
                 rename: newName,
-                conflict: conflict
+                conflict,
             }),
-        }).done(response => {
+        }).done((response) => {
             this.set('name', response.data.attributes.name);
         });
     },
@@ -80,7 +80,7 @@ export default OsfModel.extend(FileItemMixin, {
                         create_guid: 1,
                     },
                 },
-            }
+            },
         );
     },
     getContents() {
@@ -98,7 +98,7 @@ export default OsfModel.extend(FileItemMixin, {
             url: this.get('links.upload'),
             type: 'PUT',
             xhrFields: { withCredentials: true },
-            data: data,
+            data,
         }).then(() => this.reload());
     },
 });

@@ -13,5 +13,5 @@ import OsfModel from './osf-model';
  * @class Citation
  */
 export default OsfModel.extend({
-    citation: DS.attr('string')
+    citation: DS.attr('string'),
 });

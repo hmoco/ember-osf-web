@@ -20,8 +20,8 @@ export default OsfModel.extend({
     // Reviews settings
     permissions: DS.attr(),
     reviewsWorkflow: DS.attr('string'),
-    reviewsCommentsPrivate: DS.attr('boolean', {allowNull: true}),
-    reviewsCommentsAnonymous: DS.attr('boolean', {allowNull: true}),
+    reviewsCommentsPrivate: DS.attr('boolean', { allowNull: true }),
+    reviewsCommentsAnonymous: DS.attr('boolean', { allowNull: true }),
     reviewableStatusCounts: Ember.computed.alias('links.relationships.preprints.links.related.meta'),
 
     // Relationships

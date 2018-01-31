@@ -13,11 +13,11 @@ export default OsfSerializer.extend({
                 target: {
                     data: {
                         id: targetID,
-                        type: targetType
-                    }
-                }
+                        type: targetType,
+                    },
+                },
             };
         }
         return serialized;
-    }
+    },
 });

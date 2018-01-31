@@ -31,15 +31,15 @@ export default Node.extend({
     registeredMeta: DS.attr(),
 
     registeredFrom: DS.belongsTo('node', {
-        inverse: 'registrations'
+        inverse: 'registrations',
     }),
     registeredBy: DS.belongsTo('user', {
-        inverse: null
+        inverse: null,
     }),
     contributors: DS.hasMany('contributors'),
     comments: DS.hasMany('comments'),
     draftRegistration: DS.attr('fixstring'),
     registrationChoice: DS.attr('fixstring'),
-    liftEmbargo: DS.attr()
-    //more relationship
+    liftEmbargo: DS.attr(),
+    // more relationship
 });

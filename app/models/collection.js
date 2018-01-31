@@ -21,11 +21,11 @@ export default OsfModel.extend({
     bookmarks: DS.attr('boolean'),
     linkedNodes: DS.hasMany('nodes', {
         inverse: null,
-        serializerType: 'linked-node'
+        serializerType: 'linked-node',
     }),
     linkedRegistrations: DS.hasMany('registrations', {
         inverse: null,
-        serializerType: 'linked-node'
-    })
+        serializerType: 'linked-node',
+    }),
 
 });

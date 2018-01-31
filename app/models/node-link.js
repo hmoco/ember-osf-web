@@ -18,5 +18,5 @@ import OsfModel from './osf-model';
  * @class NodeLink
  */
 export default OsfModel.extend({
-    targetNode: DS.belongsTo('node')
+    targetNode: DS.belongsTo('node'),
 });

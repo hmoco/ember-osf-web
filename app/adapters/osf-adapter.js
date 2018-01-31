@@ -5,7 +5,7 @@ import config from 'ember-get-config';
 import GenericDataAdapterMixin from 'ember-osf/mixins/generic-data-adapter';
 
 import {
-    singularize
+    singularize,
 } from 'ember-inflector';
 
 /**
@@ -22,7 +22,7 @@ import {
  */
 export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
     headers: {
-        ACCEPT: 'application/vnd.api+json; version=2.4'
+        ACCEPT: 'application/vnd.api+json; version=2.4',
     },
     authorizer: config['ember-simple-auth'].authorizer,
     host: config.OSF.apiUrl,
@@ -36,7 +36,7 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @method buildQuery
      */
     buildQuery(snapshot) {
-        let query = this._super(...arguments);
+        const query = this._super(...arguments);
         if (query.include) {
             query.embed = query.include;
         }
@@ -44,8 +44,8 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
         return Ember.merge(query, Ember.getWithDefault(snapshot, 'adapterOptions.query', {}));
     },
     buildURL(modelName, id, snapshot, requestType) {
-        var url = this._super(...arguments);
-        var options = (snapshot ? snapshot.adapterOptions : false) || {};
+        let url = this._super(...arguments);
+        const options = (snapshot ? snapshot.adapterOptions : false) || {};
 
         if (requestType === 'deleteRecord') {
             if (snapshot.record.get('links.delete')) {
@@ -68,7 +68,7 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
         }
         // Allow a query to be passed along in the adapterOptions.
         if (options && options.query) {
-            url += '?' + Ember.$.param(options.query);
+            url += `?${Ember.$.param(options.query)}`;
         }
         return url;
     },
@@ -80,11 +80,9 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {DS.Snapshot} snapshot
      * @param {String} relationship the relationship to build a url for
      * @return {String} a URL
-     **/
+     * */
     _buildRelationshipURL(snapshot, relationship) {
-        var links = relationship ? snapshot.record.get(
-            `relationshipLinks.${Ember.String.underscore(relationship)}.links`
-        ) : false;
+        const links = relationship ? snapshot.record.get(`relationshipLinks.${Ember.String.underscore(relationship)}.links`) : false;
         if (links && (links.self || links.related)) {
             return links.self ? links.self.href : links.related.href;
         }
@@ -101,8 +99,8 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} relationship
      * @param {String} url
      * @param {Boolean} isBulk
-     **/
-    _createRelated(store, snapshot, createdSnapshots, relationship, url) { //, isBulk = false) {
+     * */
+    _createRelated(store, snapshot, createdSnapshots, relationship, url) { // , isBulk = false) {
         // TODO support bulk create?
         // if (isBulk) {
         //
@@ -110,10 +108,10 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
         return createdSnapshots.map(s => s.record.save({
             adapterOptions: {
                 nested: true,
-                url: url,
-                requestType: 'create'
-            }
-        }).then(res => {
+                url,
+                requestType: 'create',
+            },
+        }).then((res) => {
             snapshot.record.resolveRelationship(relationship).addCanonicalRecord(s.record._internalModel);
             return res;
         }));
@@ -130,9 +128,9 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} relationship
      * @param {String} url
      * @param {Boolean} isBulk
-     **/
+     * */
     _addRelated(store, snapshot, addedSnapshots, relationship, url, isBulk = false) {
-        return this._doRelatedRequest(store, snapshot, addedSnapshots, relationship, url, 'POST', isBulk).then(res => {
+        return this._doRelatedRequest(store, snapshot, addedSnapshots, relationship, url, 'POST', isBulk).then((res) => {
             addedSnapshots.forEach(function(s) {
                 snapshot.record.resolveRelationship(relationship).addCanonicalRecord(s.record._internalModel);
             });
@@ -150,12 +148,12 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} relationship
      * @param {String} url
      * @param {Boolean} isBulk
-     **/
+     * */
     _updateRelated(store, snapshot, updatedSnapshots, relationship, url, isBulk = false) {
-        return this._doRelatedRequest(store, snapshot, updatedSnapshots, relationship, url, 'PATCH', isBulk).then(res => {
-            var relatedType = singularize(snapshot.record[relationship].meta().type);
-            res.data.forEach(item => {
-                var record = store.push(store.normalize(relatedType, item));
+        return this._doRelatedRequest(store, snapshot, updatedSnapshots, relationship, url, 'PATCH', isBulk).then((res) => {
+            const relatedType = singularize(snapshot.record[relationship].meta().type);
+            res.data.forEach((item) => {
+                const record = store.push(store.normalize(relatedType, item));
                 snapshot.record.resolveRelationship(relationship).addCanonicalRecord(record._internalModel);
             });
             return res;
@@ -173,9 +171,9 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} relationship
      * @param {String} url
      * @param {Boolean} isBulk
-     **/
+     * */
     _removeRelated(store, snapshot, removedSnapshots, relationship, url, isBulk = false) {
-        return this._doRelatedRequest(store, snapshot, removedSnapshots, relationship, url, 'DELETE', isBulk).then(res => {
+        return this._doRelatedRequest(store, snapshot, removedSnapshots, relationship, url, 'DELETE', isBulk).then((res) => {
             removedSnapshots.forEach(s => snapshot.record.resolveRelationship(relationship).removeCanonicalRecord(s.record._internalModel));
             return res || [];
         });
@@ -191,8 +189,8 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} relationship
      * @param {String} url
      * @param {Boolean} isBulk
-     **/
-    _deleteRelated(store, snapshot, deletedSnapshots) { //, relationship, url, isBulk = false) {
+     * */
+    _deleteRelated(store, snapshot, deletedSnapshots) { // , relationship, url, isBulk = false) {
         return this._removeRelated(...arguments).then(() => {
             deletedSnapshots.forEach(s => s.record.unloadRecord());
         });
@@ -209,25 +207,25 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {String} url
      * @param {String} requestMethod
      * @param {Boolean} isBulk
-     **/
+     * */
     _doRelatedRequest(store, snapshot, relatedSnapshots, relationship, url, requestMethod, isBulk = false) {
-        var data = {};
-        var relatedMeta = snapshot.record[relationship].meta();
-        var type = singularize(relatedMeta.type);
-        var serializer = store.serializerFor(type);
+        const data = {};
+        const relatedMeta = snapshot.record[relationship].meta();
+        const type = singularize(relatedMeta.type);
+        let serializer = store.serializerFor(type);
         if (relatedMeta.options.serializerType) {
             serializer = store.serializerFor(relatedMeta.options.serializerType);
         }
         if (Ember.isArray(relatedSnapshots)) {
-            data.data = relatedSnapshots.map(relatedSnapshot => {
-                var item = {};
+            data.data = relatedSnapshots.map((relatedSnapshot) => {
+                const item = {};
                 serializer.serializeIntoHash(
                     item,
                     store.modelFor(type),
                     relatedSnapshot, {
                         forRelationship: true,
-                        isBulk: isBulk
-                    }
+                        isBulk,
+                    },
                 );
                 if (Ember.isArray(item.data) && item.data.length === 1) {
                     return item.data[0];
@@ -240,14 +238,14 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
                 store.modelFor(type),
                 relatedSnapshots, {
                     forRelationship: true,
-                    isBulk: isBulk
-                }
+                    isBulk,
+                },
             );
         }
         return this.ajax(url, requestMethod, {
-            data: data,
-            isBulk: isBulk
-        }).then(res => {
+            data,
+            isBulk,
+        }).then((res) => {
             if (res && !Ember.$.isArray(res.data)) {
                 res.data = [res.data];
             }
@@ -265,9 +263,9 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
      * @param {DS.Snapshot} snapshot
      * @param {String} relationship
      * @param {String} change
-     **/
+     * */
     _handleRelatedRequest(store, type, snapshot, relationship, change) {
-        var related = snapshot.record.get(`_dirtyRelationships.${relationship}.${change}`).map(function(r) {
+        let related = snapshot.record.get(`_dirtyRelationships.${relationship}.${change}`).map(function(r) {
             if (r._internalModel) {
                 return r._internalModel.createSnapshot();
             }
@@ -277,44 +275,40 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
             return [];
         }
 
-        var relatedMeta = snapshot.record[relationship].meta();
-        var url = this._buildRelationshipURL(snapshot, relationship);
-        var adapter = store.adapterFor(type.modelName);
-        var allowBulk = relatedMeta.options[`allowBulk${Ember.String.capitalize(change)}`];
+        const relatedMeta = snapshot.record[relationship].meta();
+        const url = this._buildRelationshipURL(snapshot, relationship);
+        const adapter = store.adapterFor(type.modelName);
+        const allowBulk = relatedMeta.options[`allowBulk${Ember.String.capitalize(change)}`];
 
         if (related.record) {
             related = [related];
         }
 
-        var response;
+        let response;
         response = adapter[`_${change}Related`](
             store,
             snapshot,
             related,
             relationship,
             url,
-            allowBulk
+            allowBulk,
         );
         return response;
     },
     updateRecord(store, type, snapshot) {
-        var relatedRequests = {};
-        var dirtyRelationships = snapshot.record.get('_dirtyRelationships');
-        Object.keys(dirtyRelationships).forEach(relationship => {
-            var promises = [];
-            var changed = dirtyRelationships[relationship];
-            Object.keys(changed).forEach(change => {
-                promises = promises.concat(
-                    this._handleRelatedRequest(
-                        store, type, snapshot, relationship, change
-                    ) || []
-                );
+        const relatedRequests = {};
+        const dirtyRelationships = snapshot.record.get('_dirtyRelationships');
+        Object.keys(dirtyRelationships).forEach((relationship) => {
+            let promises = [];
+            const changed = dirtyRelationships[relationship];
+            Object.keys(changed).forEach((change) => {
+                promises = promises.concat(this._handleRelatedRequest(store, type, snapshot, relationship, change) || []);
             });
             if (promises.length) {
                 relatedRequests[relationship] = Ember.RSVP.allSettled(promises);
             }
         });
-        var relatedPromise = Ember.RSVP.hashSettled(relatedRequests);
+        const relatedPromise = Ember.RSVP.hashSettled(relatedRequests);
         if (Object.keys(snapshot.record.changedAttributes()).length) {
             return this._super(...arguments).then(response => relatedPromise.then(() => response));
         } else {
@@ -322,14 +316,14 @@ export default DS.JSONAPIAdapter.extend(GenericDataAdapterMixin, {
         }
     },
     ajaxOptions(_, __, options) {
-        var ret = this._super(...arguments);
+        const ret = this._super(...arguments);
         if (options && options.isBulk) {
             ret.contentType = 'application/vnd.api+json; ext=bulk';
         }
         return ret;
     },
     pathForType(modelName) {
-        var underscored = Ember.String.underscore(modelName);
+        const underscored = Ember.String.underscore(modelName);
         return Ember.String.pluralize(underscored);
-    }
+    },
 });

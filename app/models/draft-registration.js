@@ -20,12 +20,12 @@ export default OsfModel.extend({
     datetimeInitiated: DS.attr('date'),
     datetimeUpdated: DS.attr('date'),
     branchedFrom: DS.belongsTo('node', {
-        inverse: null
+        inverse: null,
     }),
     initiator: DS.belongsTo('user', {
-        inverse: null
+        inverse: null,
     }),
     registrationSchema: DS.belongsTo('metaschema', {
-        inverse: null
-    })
+        inverse: null,
+    }),
 });

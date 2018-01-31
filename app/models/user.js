@@ -29,15 +29,15 @@ export default OsfModel.extend({
 
     nodes: DS.hasMany('nodes'),
     registrations: DS.hasMany('registrations'),
-    canViewReviews: DS.attr('boolean', {defaultValue: false}),
+    canViewReviews: DS.attr('boolean', { defaultValue: false }),
 
     quickfiles: DS.hasMany('files'),
 
     institutions: DS.hasMany('institutions', {
-        inverse: 'users'
+        inverse: 'users',
     }),
 
     // Calculated fields
     profileURL: Ember.computed.alias('links.html'),
-    profileImage: Ember.computed.alias('links.profile_image')
+    profileImage: Ember.computed.alias('links.profile_image'),
 });

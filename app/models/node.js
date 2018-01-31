@@ -47,57 +47,57 @@ export default OsfModel.extend(FileItemMixin, {
     templateFrom: DS.attr('fixstring'),
 
     parent: DS.belongsTo('node', {
-        inverse: 'children'
+        inverse: 'children',
     }),
     children: DS.hasMany('nodes', {
-        inverse: 'parent'
+        inverse: 'parent',
     }),
     preprints: DS.hasMany('preprints', {
-        inverse: 'node'
+        inverse: 'node',
     }),
     affiliatedInstitutions: DS.hasMany('institutions', {
-        inverse: 'nodes'
+        inverse: 'nodes',
     }),
     comments: DS.hasMany('comments'),
     contributors: DS.hasMany('contributors', {
         allowBulkUpdate: true,
         allowBulkRemove: true,
-        inverse: 'node'
+        inverse: 'node',
     }),
     citation: DS.belongsTo('citation'),
 
     license: DS.belongsTo('license', {
-        inverse: null
+        inverse: null,
     }),
 
     files: DS.hasMany('file-provider'),
-    //forkedFrom: DS.belongsTo('node'),
+    // forkedFrom: DS.belongsTo('node'),
     linkedNodes: DS.hasMany('nodes', {
         inverse: null,
-        serializerType: 'linked-node'
+        serializerType: 'linked-node',
     }),
     registrations: DS.hasMany('registrations', {
-        inverse: 'registeredFrom'
+        inverse: 'registeredFrom',
     }),
 
     draftRegistrations: DS.hasMany('draft-registrations', {
-        inverse: 'branchedFrom'
+        inverse: 'branchedFrom',
     }),
 
     forks: DS.hasMany('nodes', {
-        inverse: 'forkedFrom'
+        inverse: 'forkedFrom',
     }),
 
     forkedFrom: DS.belongsTo('node', {
-        inverse: 'forks'
+        inverse: 'forks',
     }),
 
     root: DS.belongsTo('node', {
-        inverse: null
+        inverse: null,
     }),
 
     wikis: DS.hasMany('wikis', {
-        inverse: 'node'
+        inverse: 'node',
     }),
 
     logs: DS.hasMany('logs'),
@@ -132,9 +132,9 @@ export default OsfModel.extend(FileItemMixin, {
     isContributor(userId) {
         // Return true if there is at least one matching contributor for this user ID
         if (!userId) {
-            return new Ember.RSVP.Promise((resolve) => resolve(false));
+            return new Ember.RSVP.Promise(resolve => resolve(false));
         }
-        var contribId = `${this.get('id')}-${userId}`;
+        const contribId = `${this.get('id')}-${userId}`;
         return this.store.findRecord('contributor', contribId).then(() => true, () => false);
     },
 
@@ -142,69 +142,69 @@ export default OsfModel.extend(FileItemMixin, {
         // Some duplicate logic from osf-model#save needed to support
         // contributor edits being saved through the node
         // Note: order is important here so _dirtyRelationships gets set by the _super call
-        var promise = this._super(...arguments);
+        const promise = this._super(...arguments);
         if (!this.get('_dirtyRelationships.contributors')) {
             this.set('_dirtyRelationships.contributors', {});
         }
 
-        var contributors = this.hasMany('contributors').hasManyRelationship;
+        const contributors = this.hasMany('contributors').hasManyRelationship;
         this.set(
             '_dirtyRelationships.contributors.update',
-            contributors.members.list.filter(m => !m.getRecord().get('isNew') && Object.keys(m.getRecord().changedAttributes()).length > 0)
+            contributors.members.list.filter(m => !m.getRecord().get('isNew') && Object.keys(m.getRecord().changedAttributes()).length > 0),
         );
         // Need to included created contributors even in relationship
         // hasLoaded is false
         this.set(
             '_dirtyRelationships.contributors.create',
-            contributors.members.list.filter(m => m.getRecord().get('isNew'))
+            contributors.members.list.filter(m => m.getRecord().get('isNew')),
         );
         // Contributors are a 'real' delete, not just a de-reference
         this.set(
             '_dirtyRelationships.contributors.delete',
-            this.get('_dirtyRelationships.contributors.remove') || []
+            this.get('_dirtyRelationships.contributors.remove') || [],
         );
         this.set('_dirtyRelationships.contributors.remove', []);
         return promise;
     },
 
     addChild(title, description, category) {
-        let child = this.store.createRecord('node', {
-            title: title,
+        const child = this.store.createRecord('node', {
+            title,
             category: category || 'project',
             description: description || null,
-            parent: this
+            parent: this,
         });
 
         return child.save();
     },
 
     addContributor(userId, permission, isBibliographic, sendEmail, fullName, email) {
-        let contrib = this.store.createRecord('contributor', {
-            permission: permission,
+        const contrib = this.store.createRecord('contributor', {
+            permission,
             bibliographic: isBibliographic,
-            sendEmail: sendEmail,
+            sendEmail,
             nodeId: this.get('id'),
-            userId: userId,
-            fullName: fullName,
-            email: email
+            userId,
+            fullName,
+            email,
         });
 
         return contrib.save();
     },
 
     addContributors(contributors, sendEmail) {
-        let payload = contributors.map(contrib => {
-            let c = this.store.createRecord('contributor', {
+        const payload = contributors.map((contrib) => {
+            const c = this.store.createRecord('contributor', {
                 permission: contrib.permission,
                 bibliographic: contrib.bibliographic,
                 nodeId: this.get('id'),
                 userId: contrib.userId,
-                id: this.get('id') + '-' + contrib.userId,
-                unregisteredContributor: null
+                id: `${this.get('id')}-${contrib.userId}`,
+                unregisteredContributor: null,
             });
             return c.serialize({
                 includeId: true,
-                includeUser: true
+                includeUser: true,
             }).data;
         });
 
@@ -218,12 +218,12 @@ export default OsfModel.extend(FileItemMixin, {
         // TODO Get this working properly - should not be an ajax request in the future.
         return this.store.adapterFor('contributor').ajax(this.get('links.relationships.contributors.links.related.href') + emailQuery, 'POST', {
             data: {
-                data: payload
+                data: payload,
             },
-            isBulk: true
-        }).then(resp => {
+            isBulk: true,
+        }).then((resp) => {
             this.store.pushPayload(resp);
-            var createdContribs = Ember.A();
+            const createdContribs = Ember.A();
             resp.data.map((contrib) => {
                 createdContribs.push(this.store.peekRecord('contributor', contrib.id));
             });
@@ -236,17 +236,15 @@ export default OsfModel.extend(FileItemMixin, {
     },
 
     updateContributor(contributor, permissions, bibliographic) {
-        if (!Ember.isEmpty(permissions))
-            contributor.set('permission', permissions);
-        if (!Ember.isEmpty(bibliographic))
-            contributor.set('bibliographic', bibliographic);
+        if (!Ember.isEmpty(permissions)) { contributor.set('permission', permissions); }
+        if (!Ember.isEmpty(bibliographic)) { contributor.set('bibliographic', bibliographic); }
         return contributor.save();
     },
 
     updateContributors(contributors, permissionsChanges, bibliographicChanges) {
-        let payload = contributors
+        const payload = contributors
             .filter(contrib => contrib.id in permissionsChanges || contrib.id in bibliographicChanges)
-            .map(contrib => {
+            .map((contrib) => {
                 if (contrib.id in permissionsChanges) {
                     contrib.set('permission', permissionsChanges[contrib.id]);
                 }
@@ -257,18 +255,18 @@ export default OsfModel.extend(FileItemMixin, {
 
                 return contrib.serialize({
                     includeId: true,
-                    includeUser: false
+                    includeUser: false,
                 }).data;
             });
 
         return this.store.adapterFor('contributor').ajax(this.get('links.relationships.contributors.links.related.href'), 'PATCH', {
             data: {
-                data: payload
+                data: payload,
             },
-            isBulk: true
-        }).then(resp => {
+            isBulk: true,
+        }).then((resp) => {
             this.store.pushPayload(resp);
             return contributors;
         });
-    }
+    },
 });

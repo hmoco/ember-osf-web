@@ -11,8 +11,7 @@ export default OsfSerializer.extend({
 
     serialize(snapshot) {
         const res = this._super(...arguments);
-        if (res.data.attributes && 'subjects' in snapshot.record.changedAttributes())
-            res.data.attributes.subjects = (snapshot.record.get('subjects') || []);
+        if (res.data.attributes && 'subjects' in snapshot.record.changedAttributes()) { res.data.attributes.subjects = (snapshot.record.get('subjects') || []); }
         return res;
     },
 });

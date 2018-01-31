@@ -2,15 +2,15 @@ import Ember from 'ember';
 import OsfSerializer from './osf-serializer';
 
 export default OsfSerializer.extend({
-    serialize: function(snapshot, options = {}) {
+    serialize(snapshot, options = {}) {
         // Restore relationships to serialized data
-        var serialized = this._super(snapshot, options);
+        const serialized = this._super(snapshot, options);
 
-        var opts = {};
+        let opts = {};
 
         if (snapshot.record.get('isNew')) {
             opts = {
-                includeUser: true
+                includeUser: true,
             };
         }
         Ember.merge(opts, options);
@@ -21,11 +21,11 @@ export default OsfSerializer.extend({
                 users: {
                     data: {
                         id: snapshot.record.get('userId'),
-                        type: 'users'
-                    }
-                }
+                        type: 'users',
+                    },
+                },
             };
         }
         return serialized;
-    }
+    },
 });

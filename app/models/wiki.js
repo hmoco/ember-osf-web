@@ -14,6 +14,6 @@ export default OsfModel.extend({
     size: DS.attr('number'),
 
     node: DS.belongsTo('node', {
-        inverse: 'wikis'
-    })
+        inverse: 'wikis',
+    }),
 });

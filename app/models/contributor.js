@@ -20,29 +20,29 @@ export default OsfModel.extend({
 
     _userId: null,
     userId: Ember.computed('_userId', {
-        get: function() {
+        get() {
             if (this.get('isNew')) {
                 return this.get('_userId');
             } else {
                 return this.get('id').split('-').pop();
             }
         },
-        set: function(_, userId) {
+        set(_, userId) {
             this.set('_userId', userId);
-        }
+        },
     }).volatile(),
     _nodeId: null,
     nodeId: Ember.computed('_nodeId', {
-        get: function() {
+        get() {
             if (this.get('isNew')) {
                 return this.get('_nodeId');
             } else {
                 return this.get('id').split('-').shift();
             }
         },
-        set: function(_, nodeId) {
+        set(_, nodeId) {
             this.set('_nodeId', nodeId);
-        }
+        },
     }).volatile(),
 
     users: DS.belongsTo('user'),
@@ -53,6 +53,6 @@ export default OsfModel.extend({
     sendEmail: DS.attr('boolean'),
 
     node: DS.belongsTo('node', {
-        inverse: 'contributors'
-    })
+        inverse: 'contributors',
+    }),
 });

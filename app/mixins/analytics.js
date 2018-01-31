@@ -16,7 +16,7 @@ export default Ember.Mixin.create({
     actions: {
         click(category, label, extra) {
             if (extra && typeof extra !== 'string') {
-                let extra = null;
+                const extra = null;
             }
             Ember.get(this, 'metrics')
                 .trackEvent({

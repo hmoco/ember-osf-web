@@ -14,7 +14,7 @@ export default function pathJoin() {
         } else if (first(cur)) {
             p += cur;
         } else {
-            p += '/' + cur;
+            p += `/${cur}`;
         }
     }
     return p;
