@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import { getAuthUrl } from '../utils/auth';
 
 /**
@@ -14,7 +15,7 @@ import { getAuthUrl } from '../utils/auth';
  *
  * @class CasAuthenticatedRouteMixin
  */
-export default Ember.Mixin.create({
+export default Mixin.create({
     /**
       The session service.
       @property session
@@ -22,8 +23,8 @@ export default Ember.Mixin.create({
       @type SessionService
       @public
     */
-    session: Ember.inject.service('session'),
-    routing: Ember.inject.service('-routing'),
+    session: service('session'),
+    routing: service('-routing'),
 
     /**
       Checks whether the session is authenticated, and if it is not, attempts to authenticate it, and if that fails,

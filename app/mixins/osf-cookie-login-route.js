@@ -1,3 +1,5 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import Ember from 'ember';
 
 /**
@@ -13,8 +15,8 @@ import Ember from 'ember';
  * @extends Ember.Mixin
  * @uses ember-simple-auth/UnauthenticatedRouteMixin
  */
-export default Ember.Mixin.create({
-    session: Ember.inject.service(),
+export default Mixin.create({
+    session: service(),
     beforeModel() {
         // Determine whether the user is logged in by making a test request. This is quite a crude way of
         // determining whether the user has a cookie and should be improved in the future.

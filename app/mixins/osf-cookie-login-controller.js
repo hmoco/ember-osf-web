@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 
 import { getAuthUrl } from '../utils/auth';
 
@@ -14,8 +15,8 @@ import { getAuthUrl } from '../utils/auth';
  * @class OsfCookieLoginController
  * @extends Ember.Mixin
  */
-export default Ember.Mixin.create({
-    session: Ember.inject.service('session'),
+export default Mixin.create({
+    session: service('session'),
 
     queryParams: ['ticket'],
     ticket: null,

@@ -1,4 +1,5 @@
-import Ember from 'ember';
+import { underscore, camelize } from '@ember/string';
+import $ from 'jquery';
 import DS from 'ember-data';
 
 /**
@@ -71,7 +72,7 @@ export default DS.JSONAPISerializer.extend({
         this._extractEmbeds(resourceHash);
 
         if (resourceHash.relationships && resourceHash.attributes.links) {
-            resourceHash.attributes.links = Ember.$.extend(resourceHash.attributes.links, {
+            resourceHash.attributes.links = $.extend(resourceHash.attributes.links, {
                 relationships: resourceHash.relationships,
             });
         }
@@ -84,20 +85,20 @@ export default DS.JSONAPISerializer.extend({
     },
 
     keyForAttribute(key) {
-        return Ember.String.underscore(key);
+        return underscore(key);
     },
 
     keyForRelationship(key) {
-        return Ember.String.underscore(key);
+        return underscore(key);
     },
 
     serialize(snapshot, options) {
         const serialized = this._super(snapshot, options);
-        serialized.data.type = Ember.String.underscore(serialized.data.type);
+        serialized.data.type = underscore(serialized.data.type);
         // Only send dirty attributes in request
         if (!snapshot.record.get('isNew')) {
             for (const attribute in serialized.data.attributes) {
-                if (!(Ember.String.camelize(attribute) in snapshot.record.changedAttributes())) {
+                if (!(camelize(attribute) in snapshot.record.changedAttributes())) {
                     delete serialized.data.attributes[attribute];
                 }
             }
@@ -112,7 +113,7 @@ export default DS.JSONAPISerializer.extend({
             if (type) {
                 const changeLists = Object.values(snapshot.record._dirtyRelationships[relationship]);
                 if (changeLists.any(l => l.length)) {
-                    serialized.data.relationships[Ember.String.underscore(relationship)] = {
+                    serialized.data.relationships[underscore(relationship)] = {
                         data: {
                             id: snapshot.belongsTo(relationship, { id: true }),
                             type,

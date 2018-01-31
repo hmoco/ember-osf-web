@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import EmberError from '@ember/error';
 import config from 'ember-get-config';
 
 import OsfTokenLoginController from '../mixins/osf-token-login-controller';
@@ -16,7 +16,7 @@ if (authType === 'token') {
 } else if (authType === 'cookie') {
     AuthMixin = OsfCookieLoginController;
 } else {
-    throw new Ember.Error(`Unrecognized authorization type: ${authType}`);
+    throw new EmberError(`Unrecognized authorization type: ${authType}`);
 }
 /**
  * Controller mixin for authentication-agnostic login: defines the application at runtime to use the authentication method

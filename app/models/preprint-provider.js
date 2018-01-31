@@ -1,4 +1,4 @@
-import Ember from 'ember';
+import { alias } from '@ember/object/computed';
 import DS from 'ember-data';
 import OsfModel from 'ember-osf/models/osf-model';
 
@@ -22,7 +22,7 @@ export default OsfModel.extend({
     reviewsWorkflow: DS.attr('string'),
     reviewsCommentsPrivate: DS.attr('boolean', { allowNull: true }),
     reviewsCommentsAnonymous: DS.attr('boolean', { allowNull: true }),
-    reviewableStatusCounts: Ember.computed.alias('links.relationships.preprints.links.related.meta'),
+    reviewableStatusCounts: alias('links.relationships.preprints.links.related.meta'),
 
     // Relationships
     taxonomies: DS.hasMany('taxonomy'),
@@ -30,5 +30,5 @@ export default OsfModel.extend({
     preprints: DS.hasMany('preprint', { inverse: 'provider', async: true }),
     licensesAcceptable: DS.hasMany('license', { inverse: null }),
 
-    hasHighlightedSubjects: Ember.computed.alias('links.relationships.highlighted_taxonomies.links.related.meta.has_highlighted_subjects'),
+    hasHighlightedSubjects: alias('links.relationships.highlighted_taxonomies.links.related.meta.has_highlighted_subjects'),
 });

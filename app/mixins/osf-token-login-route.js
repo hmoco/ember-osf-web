@@ -1,3 +1,5 @@
+import { inject as service } from '@ember/service';
+import Mixin from '@ember/object/mixin';
 import Ember from 'ember';
 
 import config from 'ember-get-config';
@@ -17,15 +19,15 @@ import { getTokenFromHash } from '../utils/auth';
  * @class OsfTokenLoginRouteMixin
  * @extends Ember.Mixin
  */
-export default Ember.Mixin.create({
-    session: Ember.inject.service(),
+export default Mixin.create({
+    session: service(),
     beforeModel() {
         // TODO: Should this check for resolution of a promise?
         this._super(...arguments);
 
         let accessToken;
         if (config.OSF.isLocal) {
-            accessToken = config.OSF.accessToken;
+            ({accessToken} = config.OSF);
         } else {
             accessToken = getTokenFromHash(window.location.hash);
             if (!accessToken) {
