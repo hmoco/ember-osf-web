@@ -9,11 +9,24 @@ import mime from 'npm:mime-types';
 import Analytics from 'ember-osf/mixins/analytics';
 import config from 'ember-get-config';
 import pathJoin from 'ember-osf/utils/path-join';
+import { htmlSafe } from '@ember/string';
 
 export default Controller.extend(Analytics, {
     currentUser: service(),
     toast: service(),
     queryParams: ['show'],
+
+    init() {
+        this._super(...arguments);
+        outsideClick(function() {
+            this.send('dismissToggle');
+        }.bind(this));
+
+        $(window).resize(function() {
+            this.send('dismissToggle');
+        }.bind(this));
+    },
+
     show: 'view',
     revision: null,
     deleteModalOpen: false,
@@ -78,11 +91,11 @@ export default Controller.extend(Analytics, {
     }),
 
     shareiFrameDynamic: computed('model.file', function() {
-        return `<style>.embed-responsive{position:relative;height:100%;}.embed-responsive iframe{position:absolute;height:100%;}</style><script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-1.11.2.min.js">\x3C/script>') </script><link href="https://mfr.osf.io/static/css/mfr.css" media="all" rel="stylesheet"><div id="mfrIframe" class="mfr mfr-file"></div><script src="https://mfr.osf.io/static/js/mfr.js"></script> <script>var mfrRender = new mfr.Render("mfrIframe", "${this.get('mfrUrl')}");</script>`;
+        return htmlSafe(`<style>.embed-responsive{position:relative;height:100%;}.embed-responsive iframe{position:absolute;height:100%;}</style><script>window.jQuery || document.write('<script src="//code.jquery.com/jquery-1.11.2.min.js">\x3C/script>') </script><link href="https://mfr.osf.io/static/css/mfr.css" media="all" rel="stylesheet"><div id="mfrIframe" class="mfr mfr-file"></div><script src="https://mfr.osf.io/static/js/mfr.js"></script> <script>var mfrRender = new mfr.Render("mfrIframe", "${this.get('mfrUrl')}");</script>`);
     }),
 
     shareiFrameDirect: computed('model.file', function() {
-        return `<iframe src="${this.get('mfrUrl')}" width="100%" scrolling="yes" height="677px" marginheight="0" frameborder="0" allowfullscreen webkitallowfullscreen>`;
+        return htmlSafe(`<iframe src="${this.get('mfrUrl')}" width="100%" scrolling="yes" height="677px" marginheight="0" frameborder="0" allowfullscreen webkitallowfullscreen>`);
     }),
 
     fileTags: computed('model.file', function() {
@@ -146,6 +159,7 @@ export default Controller.extend(Analytics, {
             } else {
                 file.getGuid().then(() => this.transitionToRoute('file-detail', file.get('guid'), { queryParams: { show: 'view' } }));
             }
+            this.set('revision', null);
         },
 
         addTag(tag) {
@@ -173,17 +187,6 @@ export default Controller.extend(Analytics, {
         dismissToggle() {
             this.set('showPopup', false);
         },
-    },
-
-    init() {
-        this._super(...arguments);
-        outsideClick(function() {
-            this.send('dismissToggle');
-        }.bind(this));
-
-        $(window).resize(function() {
-            this.send('dismissToggle');
-        }.bind(this));
     },
 
     _returnFileVersion(result) {
