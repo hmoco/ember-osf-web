@@ -14,15 +14,15 @@ export default class NodeNavbarLink extends Component {
     extraClasses?: string;
 
 
-    // @computed('destination')
-    // get routeName(this: NodeNavbarLink): string {
-    //     const dest = this.get('destination');
-    //     return `guid-node${dest ? '.' : ''}${dest}`;
-    // }
-    //
-    //
-    // @computed('destination')
-    // get translatingKey(this: NodeNavbarLink): string {
-    //     return `node_navbar.${this.get('destination')}`
-    // }
+    @computed('destination')
+    get routeName(this: NodeNavbarLink): string {
+        const dest = this.get('destination');
+        return `guid-node${dest ? '.' : ''}${dest}`;
+    }
+
+
+    @computed('destination')
+    get translatingKey(this: NodeNavbarLink): string {
+        return `node_navbar.${this.get('destination')}`
+    }
 };
